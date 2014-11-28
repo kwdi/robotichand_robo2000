@@ -31,6 +31,14 @@ int END=7;//pwm
 int IN7=28;
 int IN8=29;
 
+
+//variables
+byte byteRead;
+int u=0;
+int j=0;
+int k=0; 
+//
+
 //Initialisation
 void setup() {
   Serial.begin(9600);
@@ -60,9 +68,42 @@ long positionLeft  = -999;
 long positionRight = -999;
 
 void loop() {
-  int j=100;
-  int k=1;  
-  MoveU1(j,k);
+   
+  //MoveU1(j,k);
+
+  /*  check if data has been sent from the computer: */
+  if (Serial.available()) {
+    /* read the most recent byte */
+    byteRead = Serial.read();
+    /*ECHO the value that was read, back to the serial port. */
+    Serial.write(byteRead);
+    u=byteRead-48;
+    byteRead = Serial.read();
+    Serial.write(byteRead);
+    j=byteRead-48;
+    byteRead = Serial.read();
+    Serial.write(byteRead);
+    k=byteRead-48;
+  }  
+
+  if(u=1)
+  {
+      MoveU1(j,k);
+      Serial.println("moving U1");
+  } 
+  else if(u=2)
+  {
+      MoveU2(j,k);
+      Serial.println("moving U2");
+  }
+  else
+  {
+      MoveD1D2(j,k);
+      Serial.println("moving D1D2");
+  }
+
+
+
   /*long newLeft, newRight;
   newLeft = RLeft.read();
   newRight = RRight.read();
