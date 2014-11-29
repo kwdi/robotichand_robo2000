@@ -41,7 +41,7 @@ int k=0;
 
 //Initialisation
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Test begin:");
 
  pinMode(ENA,OUTPUT); //Pwm U1
@@ -68,39 +68,62 @@ long positionLeft  = -999;
 long positionRight = -999;
 
 void loop() {
-   
-  //MoveU1(j,k);
+  /*j=20000;
+  k=1; 
+  MoveD1D2(j,k);
+  delay(3000);*/
 
   /*  check if data has been sent from the computer: */
-  if (Serial.available()) {
-    /* read the most recent byte */
+  //if (Serial.available()) {
+    Serial.println("waiting first num");
+    // read the most recent byte 
     byteRead = Serial.read();
-    /*ECHO the value that was read, back to the serial port. */
-    Serial.write(byteRead);
     u=byteRead-48;
+    Serial.write(byteRead);
+    //ECHO the value that was read, back to the serial port. 
+   /* Serial.println("waiting second num");
+    Serial.write(byteRead);
+    
     byteRead = Serial.read();
+    Serial.println("waiting third num");
     Serial.write(byteRead);
     j=byteRead-48;
     byteRead = Serial.read();
     Serial.write(byteRead);
-    k=byteRead-48;
-  }  
+    k=byteRead-48;*/
+  //}  
 
-  if(u=1)
+  Serial.println("secondif");
+  if(u==1)
   {
-      MoveU1(j,k);
-      Serial.println("moving U1");
+      MoveU1(200,1);
+      Serial.println("moving U1down");
   } 
-  else if(u=2)
+  else if(u==2)
   {
-      MoveU2(j,k);
-      Serial.println("moving U2");
+      MoveU1(200,2);
+      Serial.println("moving U1up"); 
   }
-  else
+  else if(u==3)
   {
-      MoveD1D2(j,k);
-      Serial.println("moving D1D2");
+      MoveU2(200,1);
+      Serial.println("moving U2down"); 
   }
+  else if(u==4)
+  {
+      MoveU2(200,2);
+      Serial.println("moving U2up");
+  }
+  else if (u==5)
+  {
+      MoveD1D2(200,1);
+      Serial.println("moving D1D2down");
+  }
+  else if (u==6)
+  {
+      MoveD1D2(200,2);
+      Serial.println("moving D1D2up"); 
+  } 
 
 
 
@@ -127,14 +150,16 @@ void loop() {
 }
 
 void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
-
-  if(y=1)
+  Serial.println("mpika");
+  if(y==1)
   {
+    Serial.println("11111111");
     digitalWrite(IN1,HIGH);  //high-down/low-up
     digitalWrite(IN2,LOW);  //low-down/high-up
   } 
-  else if (y=2)
+  else if (y==2)
   {
+    Serial.println("222222222222");
     digitalWrite(IN1,LOW);  //high-down/low-up
     digitalWrite(IN2,HIGH);  //low-down/high-up
   }
@@ -144,25 +169,29 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   int pos = U1.read();
+  Serial.println(pos);
   int finalpos=pos+x;
+  Serial.println(finalpos);
 
   while(pos<=finalpos){
-      digitalWrite(ENA,150);
+      analogWrite(ENA,200);
       pos = U1.read();
+      
   }
 
-  digitalWrite(ENA,0);
+  analogWrite(ENA,0);
+  return;
   
 }
 
 void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
 
-  if(y=1)
+  if(y==1)
   {
     digitalWrite(IN3,HIGH);  //high-down/low-up
     digitalWrite(IN4,LOW);  //low-down/high-up
   } 
-  else if (y=2)
+  else if (y==2)
   {
     digitalWrite(IN3,LOW);  //high-down/low-up
     digitalWrite(IN4,HIGH);  //low-down/high-up
@@ -173,27 +202,34 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   int pos = U2.read();
+  Serial.println(pos);
   int finalpos=pos+x;
+  Serial.println(finalpos);
 
-  while(pos<=finalpos){
-      digitalWrite(ENB,150);
+  while(pos<finalpos){
+      analogWrite(ENB,150);
       pos = U2.read();
+      Serial.println("posinside");
+      Serial.println(pos);
+      //delay(10);
   }
 
-  digitalWrite(ENB,0);
+  analogWrite(ENB,0);
+  Serial.println("DONEEEEEEEEEEEEEE");
+  return;
   
 }
 
 void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
 
-  if(y=1)
+  if(y==1)
   {
     digitalWrite(IN5,HIGH);  //high-down/low-up
     digitalWrite(IN6,LOW);  //low-down/high-up
     digitalWrite(IN7,HIGH);  //high-down/low-up
     digitalWrite(IN8,LOW);  //low-down/high-up
   } 
-  else if (y=2)
+  else if (y==2)
   {
     digitalWrite(IN5,LOW);  //high-down/low-up
     digitalWrite(IN6,HIGH);  //low-down/high-up
@@ -212,12 +248,14 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   int finalpos2=pos2+x;
 
   while(pos1<=finalpos1 && pos2<=finalpos2){
-      digitalWrite(ENC,150);
-      digitalWrite(END,150);
+      analogWrite(ENC,200);
+      analogWrite(END,200);
       pos1 = D1.read();
       pos2 = D2.read();
+      delay(10);
   }
 
-  digitalWrite(ENC,0);
-  digitalWrite(END,0);
+  analogWrite(ENC,0);
+  analogWrite(END,0);
+  return;
 }
