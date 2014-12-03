@@ -31,6 +31,11 @@ int END=7;//pwm
 int IN7=28;
 int IN8=29;
 
+//Buttons
+int But1=40; //main
+int But2=39; //middle
+int But3=28; //grip
+
 
 //variables
 byte byteRead;
@@ -57,6 +62,9 @@ void setup() {
  pinMode(IN6,OUTPUT); //D1
  pinMode(IN7,OUTPUT); //D2
  pinMode(IN8,OUTPUT); //D2
+ pinMode(But1,INPUT); //main
+ pinMode(But2,INPUT); //middle
+ pinMode(But2,INPUT); //grip
  
  //Setting All Enable To Low
  digitalWrite(ENA,LOW);
@@ -161,7 +169,7 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U1.read();
     int finalpos=pos+x;
 
-      while(pos<=finalpos)
+      while(pos<=finalpos  && digitalRead(But1)==LOW)
       {
         pos = U1.read();
 
@@ -208,6 +216,10 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   analogWrite(ENA,0);
+  if(digitalRead(But1)==HIGH)
+  {
+    U1.write(0);
+  }
   return;
 }
 
@@ -245,7 +257,7 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U2.read();
     int finalpos=pos+x;
 
-    while(pos<=finalpos)
+    while(pos<=finalpos  && digitalRead(But2)==LOW)
       {
         pos = U2.read();
 
@@ -267,13 +279,17 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   analogWrite(ENB,0);
+  if(digitalRead(But2)==HIGH)
+  {
+    U2.write(0);
+  }
   return;
 }
 
 void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   int pos1=0;
   int pos2=0;
-  
+
   if(y==1)
   {
     digitalWrite(IN5,HIGH);  //high-down/low-up
@@ -284,7 +300,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int finalpos1=pos1+x;
     int finalpos2=pos2+x;
 
-    while(pos1<=finalpos1 && pos2<=finalpos2)
+    while(pos1<=finalpos1 && pos2<=finalpos2 && digitalRead(But3)==LOW)
       {
         pos1 = D1.read();
         pos2 = D2.read();
@@ -342,5 +358,10 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
   analogWrite(ENC,0);
   analogWrite(END,0);
+  if(digitalRead(But3)==HIGH)
+  {
+    D1.write(0);
+    D1.write(0);
+  }
   return;
 }
