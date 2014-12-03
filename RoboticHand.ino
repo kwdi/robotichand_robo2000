@@ -169,7 +169,7 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U1.read();
     int finalpos=pos+x;
 
-      while(pos<=finalpos  && digitalRead(But1)==LOW)
+      while(pos<=finalpos)
       {
         pos = U1.read();
 
@@ -194,7 +194,7 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U1.read();
     int finalpos=pos-x;
 
-    while(pos>=finalpos)
+    while(pos>=finalpos && digitalRead(But1)==LOW)
     {
       pos = U1.read();
 
@@ -233,7 +233,7 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U2.read();
     int finalpos=pos-x;
 
-    while(pos>=finalpos)
+    while(pos>=finalpos && digitalRead(But2)==LOW)
       {
         pos = U2.read();
 
@@ -257,7 +257,7 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U2.read();
     int finalpos=pos+x;
 
-    while(pos<=finalpos  && digitalRead(But2)==LOW)
+    while(pos<=finalpos)
       {
         pos = U2.read();
 
@@ -300,7 +300,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int finalpos1=pos1+x;
     int finalpos2=pos2+x;
 
-    while(pos1<=finalpos1 && pos2<=finalpos2 && digitalRead(But3)==LOW)
+    while(pos1<=finalpos1 && pos2<=finalpos2)
       {
         pos1 = D1.read();
         pos2 = D2.read();
@@ -331,7 +331,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int finalpos1=pos1-x;
     int finalpos2=pos2-x;
 
-    while(pos1>=finalpos1 && pos2>=finalpos2)
+    while(pos1>=finalpos1 && pos2>=finalpos2 && digitalRead(But3)==LOW)
       {
         pos1 = D1.read();
         pos2 = D2.read();
@@ -365,3 +365,48 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
   return;
 }
+
+void SafeZone() {
+
+  while(digitalRead(But1)!=HIGH && digitalRead(But2)!=HIGH && digitalRead(But2)!=HIGH)
+  {
+      // statement
+  analogWrite(ENA,0);
+  analogWrite(ENB,0);
+  analogWrite(ENC,0);
+  analogWrite(END,0);
+
+    if(digitalRead(But1)==LOW && digitalRead(But2)==LOW && digitalRead(But3)==LOW)
+    {
+      digitalWrite(IN1,LOW);  //high-down/low-up
+      digitalWrite(IN2,HIGH);  //low-down/high-up
+      analogWrite(ENA,200);
+
+    } else if(digitalRead(But2)==LOW && digitalRead(But3)==LOW)
+      {
+        digitalWrite(IN1,HIGH);  //high-down/low-up
+        digitalWrite(IN2,LOW);  //low-down/high-up
+        analogWrite(ENB,200);
+
+      }
+      else if (digitalRead(But3)==LOW) 
+      {
+        digitalWrite(IN5,LOW);  //high-down/low-up
+        digitalWrite(IN6,HIGH);  //low-down/high-up
+        digitalWrite(IN7,LOW);  //high-down/low-up
+        digitalWrite(IN8,HIGH);  //low-down/high-up
+        analogWrite(ENC,200);
+        analogWrite(END,200);
+      }
+      else if (digitalRead(But3)==HIGH)
+      {
+        MoveD1D2(250,1);
+      }
+
+  }
+  analogWrite(ENA,0);
+  analogWrite(ENB,0);
+  analogWrite(ENC,0);
+  analogWrite(END,0);
+}
+
