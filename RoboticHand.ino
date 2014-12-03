@@ -26,7 +26,7 @@ int ENC=6;//pwm
 int IN5=26;
 int IN6=27;
 
-//D2 Left
+// D2 Left
 int END=7;//pwm
 int IN7=28;
 int IN8=29;
@@ -36,7 +36,8 @@ int IN8=29;
 byte byteRead;
 int u=0;
 int j=0;
-int k=0; 
+int k=0;
+int pwmspeed=0; 
 //
 
 //Initialisation
@@ -156,32 +157,58 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     Serial.println("11111111");
     digitalWrite(IN1,HIGH);  //high-down/low-up
     digitalWrite(IN2,LOW);  //low-down/high-up
-  } 
+
+    int pos = U1.read();
+    int finalpos=pos+x;
+
+      while(pos<=finalpos)
+      {
+        pos = U1.read();
+
+          if((finalpos-pos)>100)
+          {
+            analogWrite(ENA,200);
+            pos = U1.read();
+          }
+          else
+          {
+            analogWrite(ENA,170);
+            pos = U1.read();
+          }    
+      }
+  }
   else if (y==2)
   {
     Serial.println("222222222222");
     digitalWrite(IN1,LOW);  //high-down/low-up
     digitalWrite(IN2,HIGH);  //low-down/high-up
+
+    int pos = U1.read();
+    int finalpos=pos-x;
+
+    while(pos>=finalpos)
+    {
+      pos = U1.read();
+
+        if((pos-finalpos)>100)
+        {
+          analogWrite(ENA,200);
+          pos = U1.read();
+        }
+        else
+        {
+          analogWrite(ENA,170);
+          pos = U1.read();
+        }    
+    }
   }
   else 
   {
     return;
   }
 
-  int pos = U1.read();
-  Serial.println(pos);
-  int finalpos=pos+x;
-  Serial.println(finalpos);
-
-  while(pos<=finalpos){
-      analogWrite(ENA,200);
-      pos = U1.read();
-      
-  }
-
   analogWrite(ENA,0);
   return;
-  
 }
 
 void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
@@ -190,44 +217,93 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   {
     digitalWrite(IN3,HIGH);  //high-down/low-up
     digitalWrite(IN4,LOW);  //low-down/high-up
+
+    int pos = U2.read();
+    int finalpos=pos-x;
+
+    while(pos>=finalpos)
+      {
+        pos = U2.read();
+
+          if((pos-finalpos)>100)
+          {
+            analogWrite(ENB,200);
+            pos = U2.read();
+          }
+          else
+          {
+            analogWrite(ENB,170);
+            pos = U2.read();
+          }    
+      }
   } 
   else if (y==2)
   {
     digitalWrite(IN3,LOW);  //high-down/low-up
     digitalWrite(IN4,HIGH);  //low-down/high-up
+
+    int pos = U2.read();
+    int finalpos=pos+x;
+
+    while(pos<=finalpos)
+      {
+        pos = U2.read();
+
+          if((finalpos-pos)>100)
+          {
+            analogWrite(ENB,200);
+            pos = U2.read();
+          }
+          else
+          {
+            analogWrite(ENB,170);
+            pos = U2.read();
+          }    
+      }
   }
   else 
   {
     return;
   }
 
-  int pos = U2.read();
-  Serial.println(pos);
-  int finalpos=pos+x;
-  Serial.println(finalpos);
-
-  while(pos<finalpos){
-      analogWrite(ENB,150);
-      pos = U2.read();
-      Serial.println("posinside");
-      Serial.println(pos);
-      //delay(10);
-  }
-
   analogWrite(ENB,0);
-  Serial.println("DONEEEEEEEEEEEEEE");
   return;
-  
 }
 
 void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
-
+  int pos1=0;
+  int pos2=0;
+  
   if(y==1)
   {
     digitalWrite(IN5,HIGH);  //high-down/low-up
     digitalWrite(IN6,LOW);  //low-down/high-up
     digitalWrite(IN7,HIGH);  //high-down/low-up
     digitalWrite(IN8,LOW);  //low-down/high-up
+
+    int finalpos1=pos1+x;
+    int finalpos2=pos2+x;
+
+    while(pos1<=finalpos1 && pos2<=finalpos2)
+      {
+        pos1 = D1.read();
+        pos2 = D2.read();
+
+          if((finalpos1-pos1)>100 && (finalpos2-pos2)>100)
+          {
+            analogWrite(ENC,200);
+            analogWrite(END,200);
+            pos1 = D1.read();
+            pos2 = D2.read();
+          }
+          else
+          {
+            analogWrite(ENC,170);
+            analogWrite(END,170);
+            pos1 = D1.read();
+            pos2 = D2.read();
+          }    
+      }
   } 
   else if (y==2)
   {
@@ -235,26 +311,35 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     digitalWrite(IN6,HIGH);  //low-down/high-up
     digitalWrite(IN7,LOW);  //high-down/low-up
     digitalWrite(IN8,HIGH);  //low-down/high-up
+
+    int finalpos1=pos1-x;
+    int finalpos2=pos2-x;
+
+    while(pos1>=finalpos1 && pos2>=finalpos2)
+      {
+        pos1 = D1.read();
+        pos2 = D2.read();
+
+          if((pos1-finalpos1)>100 &&(pos2-finalpos2)>100)
+          {
+            analogWrite(ENC,200);
+            analogWrite(END,200);
+            pos1 = D1.read();
+            pos2 = D2.read();
+          }
+          else
+          {
+            analogWrite(ENC,170);
+            analogWrite(END,170);
+            pos1 = D1.read();
+            pos2 = D2.read();
+          }    
+      }
   }
   else 
   {
     return;
   }
-
-  int pos1 = D1.read();
-  int pos2 = D2.read();
-
-  int finalpos1=pos1+x;
-  int finalpos2=pos2+x;
-
-  while(pos1<=finalpos1 && pos2<=finalpos2){
-      analogWrite(ENC,200);
-      analogWrite(END,200);
-      pos1 = D1.read();
-      pos2 = D2.read();
-      delay(10);
-  }
-
   analogWrite(ENC,0);
   analogWrite(END,0);
   return;
