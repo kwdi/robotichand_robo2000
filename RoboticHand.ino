@@ -408,5 +408,9 @@ void SafeZone() {
   analogWrite(ENB,0);
   analogWrite(ENC,0);
   analogWrite(END,0);
+  U1.write(0);
+  U2.write(0);
+  D1.write(0);
+  D2.write(0);
 }
 
