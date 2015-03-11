@@ -1,1 +1,11 @@
 stino.settings
+Encoder/Encoder.cpp
+Encoder/examples/Basic/Basic.pde
+Encoder/Encoder.h
+Encoder/examples/NoInterrupts/NoInterrupts.pde
+Encoder/examples/SpeedTest/SpeedTest.pde
+Encoder/examples/TwoKnobs/TwoKnobs.pde
+Encoder/keywords.txt
+Encoder/utility/direct_pin_read.h
+Encoder/utility/interrupt_config.h
+Encoder/utility/interrupt_pins.h
