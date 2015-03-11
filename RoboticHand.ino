@@ -62,9 +62,9 @@ void setup() {
  pinMode(IN6,OUTPUT); //D1
  pinMode(IN7,OUTPUT); //D2
  pinMode(IN8,OUTPUT); //D2
- pinMode(But1,INPUT); //main
- pinMode(But2,INPUT); //middle
- pinMode(But2,INPUT); //grip
+ pinMode(But1,INPUT_PULLUP); //main
+ pinMode(But2,INPUT_PULLUP); //middle
+ pinMode(But2,INPUT_PULLUP); //grip
  
  //Setting All Enable To Low
  digitalWrite(ENA,LOW);
@@ -194,7 +194,7 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U1.read();
     int finalpos=pos-x;
 
-    while(pos>=finalpos && digitalRead(But1)==LOW)
+    while(pos>=finalpos && digitalRead(But1)==HIGH)
     {
       pos = U1.read();
 
@@ -216,7 +216,7 @@ void MoveU1(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   analogWrite(ENA,0);
-  if(digitalRead(But1)==HIGH)
+  if(digitalRead(But1)==LOW)
   {
     U1.write(0);
   }
@@ -233,7 +233,7 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int pos = U2.read();
     int finalpos=pos-x;
 
-    while(pos>=finalpos && digitalRead(But2)==LOW)
+    while(pos>=finalpos && digitalRead(But2)==HIGH)
       {
         pos = U2.read();
 
@@ -279,7 +279,7 @@ void MoveU2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
 
   analogWrite(ENB,0);
-  if(digitalRead(But2)==HIGH)
+  if(digitalRead(But2)==LOW)
   {
     U2.write(0);
   }
@@ -331,7 +331,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
     int finalpos1=pos1-x;
     int finalpos2=pos2-x;
 
-    while(pos1>=finalpos1 && pos2>=finalpos2 && digitalRead(But3)==LOW)
+    while(pos1>=finalpos1 && pos2>=finalpos2 && digitalRead(But3)==HIGH)
       {
         pos1 = D1.read();
         pos2 = D2.read();
@@ -358,7 +358,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
   }
   analogWrite(ENC,0);
   analogWrite(END,0);
-  if(digitalRead(But3)==HIGH)
+  if(digitalRead(But3)==LOW)
   {
     D1.write(0);
     D1.write(0);
@@ -368,7 +368,7 @@ void MoveD1D2(int x, int y){ //x=steps,y=witchwaytoturn(1=right=down,2=left=up)
 
 void SafeZone() {
 
-  while(digitalRead(But1)!=HIGH && digitalRead(But2)!=HIGH && digitalRead(But2)!=HIGH)
+  while(digitalRead(But1)!=LOW && digitalRead(But2)!=LOW && digitalRead(But3)!=LOW)
   {
       // statement
   analogWrite(ENA,0);
@@ -376,20 +376,20 @@ void SafeZone() {
   analogWrite(ENC,0);
   analogWrite(END,0);
 
-    if(digitalRead(But1)==LOW && digitalRead(But2)==LOW && digitalRead(But3)==LOW)
+    if(digitalRead(But1)==HIGH && digitalRead(But2)==HIGH && digitalRead(But3)==HIGH)
     {
       digitalWrite(IN1,LOW);  //high-down/low-up
       digitalWrite(IN2,HIGH);  //low-down/high-up
       analogWrite(ENA,200);
 
-    } else if(digitalRead(But2)==LOW && digitalRead(But3)==LOW)
+    } else if(digitalRead(But2)==HIGH && digitalRead(But3)==HIGH)
       {
         digitalWrite(IN1,HIGH);  //high-down/low-up
         digitalWrite(IN2,LOW);  //low-down/high-up
         analogWrite(ENB,200);
 
       }
-      else if (digitalRead(But3)==LOW) 
+      else if (digitalRead(But3)==HIGH) 
       {
         digitalWrite(IN5,LOW);  //high-down/low-up
         digitalWrite(IN6,HIGH);  //low-down/high-up
@@ -398,7 +398,7 @@ void SafeZone() {
         analogWrite(ENC,200);
         analogWrite(END,200);
       }
-      else if (digitalRead(But3)==HIGH)
+      else if (digitalRead(But3)==LOW)
       {
         MoveD1D2(250,1);
       }
